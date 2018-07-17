@@ -7,6 +7,7 @@ const lab = exports.lab = Lab.script();
 
 const base = 'http://localhost:8000';
 
+// http get request
 const GET = async url => new Promise((resolve, reject) => {
     request.get(base + url, (_, response, body) => {
         if (response.error) {
@@ -20,6 +21,7 @@ const GET = async url => new Promise((resolve, reject) => {
     });
 });
 
+// http post request
 const POST = async (url, data) => new Promise((resolve, reject) => {
     request.post(base + url, { json: data }, (_, response, body) => {
         if (response.error) {
@@ -29,6 +31,7 @@ const POST = async (url, data) => new Promise((resolve, reject) => {
     });
 });
 
+// http delete request
 const DELETE = async (url, data) => new Promise((resolve, reject) => {
     request.delete(base + url, (_, response, body) => {
         if (response.error) {
@@ -44,7 +47,7 @@ lab.test('tests job execution time', { timeout: 16000 }, async () => {
     });
     expect(job.finished).toEqual(false);
     
-    // wait 15 seconds synchronously...
+    // wait 15 seconds synchronously... this can probably be made better by manually passing an execution time
     await new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve(undefined);
