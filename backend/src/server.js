@@ -72,6 +72,7 @@ server.route({
     path: '/pause',
     handler: (request, h) => {
         Database.paused = request.payload.pause;
+        return { status: 'ok' };
     }
 });
 
@@ -86,3 +87,5 @@ process.on('unhandledRejection', (err) => {
 });
 
 init();
+
+export default server

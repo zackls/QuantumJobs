@@ -8,10 +8,12 @@ export default class {
         this.executionTime = Math.random() * 14500 + 500;
     }
 
-    run(completion) {
+    run(completion = undefined) {
         setTimeout(() => {
             this.finished = true;
-            completion();
+            if (completion) {
+                completion();
+            }
         }, this.executionTime);
     }
 }
