@@ -25,6 +25,7 @@ const server = Hapi.server({
 server.route({
     method: 'GET',
     path: '/jobs',
+    options: { cors: true },
     handler: (request, h) => {
         // return a serialized list of all jobs
         return Database.jobs.map(serializeJob);
@@ -33,6 +34,7 @@ server.route({
 server.route({
     method: 'POST',
     path: '/jobs',
+    options: { cors: true },
     handler: (request, h) => {
         if (paused) {
             // if the database is paused, throw a 405
@@ -71,6 +73,7 @@ server.route({
 server.route({
     method: 'DELETE',
     path: '/jobs/{id}',
+    options: { cors: true },
     handler: (request, h) => {
         // find the job, throw a 404 if it doesnt exist
         const job = Database.jobs.find(j => j.id == request.params.id);
@@ -87,12 +90,22 @@ server.route({
  * -- PAUSING --
  */
 server.route({
+    method: 'GET',
+    path: '/pause',
+    options: { cors: true },
+    handler: (request, h) => {
+        // simply return whether or not were currently paused
+        return { paused: paused };
+    }
+});
+server.route({
     method: 'POST',
     path: '/pause',
+    options: { cors: true },
     handler: (request, h) => {
         // simply read the request and pause if needed
-        paused = request.payload.pause;
-        return { status: 'ok' };
+        paused = request.payload.pause == true || request.payload.pause == 'true';
+        return { paused: paused };
     }
 });
 
