@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import JobsList from './JobsList';
+import JobsPage from './JobsPage';
 import Header from '../components/Header';
 import { Col } from 'react-bootstrap';
 
@@ -14,7 +14,7 @@ class App extends Component {
         </div>
         <div className='main-columns'>
           <Col xsOffset={2} xs={8}>
-            <JobsList></JobsList>
+            <JobsPage></JobsPage>
           </Col>
         </div>
       </div>

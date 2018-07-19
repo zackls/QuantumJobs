@@ -3,12 +3,18 @@ import { Button } from 'react-bootstrap';
 
 import './ModalContent.css';
 
-export default (props) => (
+export default ({ title, body, buttons }) => (
     <div className='padded'>
-        <h3>{ props.title }</h3>
+        <h3>{ title }</h3>
         <hr/>
-        <div>{ props.body }</div>
-        <hr/>
-        { props.buttons.map(button => (<Button {...button} key={button.title}>{button.title}</Button>)) }
+        <div>{ body }</div>
+        { buttons ? 
+            <span>
+                <hr/>
+                { buttons.map(button => (<Button {...button} key={button.title}>{button.title}</Button>)) }
+            </span>
+            :
+            null
+        }
     </div>
 );

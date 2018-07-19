@@ -1,0 +1,13 @@
+.finished-text {
+    font-weight: 700;
+    color: green;
+}
+
+.status-text {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+}
+
+.empty-message {
+    padding: 4rem;
+}

@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { Col, Row, Button, Panel, Modal } from 'react-bootstrap';
-import { getJobs, deleteJob, isPaused, pauseSubmission } from '../api';
+import { Col, Row, Button, Modal } from 'react-bootstrap';
+import { getJobs, createJob, deleteJob, isPaused, pauseSubmission } from '../api';
 import axios from 'axios';
 import ReactLoading from "react-loading";
 import ModalContent from '../components/ModalContent';
+import { Text, Form } from 'react-form';
+import JobsList from '../components/JobsList';
 
-import './JobsList.css';
+import './JobsPage.css';
 
-class JobsList extends Component {
+class JobsPage extends Component {
   constructor() {
     super();
 
@@ -18,7 +20,7 @@ class JobsList extends Component {
 
       showConfirmModal: false,
       showAddJobModal: false,
-    }
+    };
   }
 
   componentWillMount() {
@@ -29,6 +31,16 @@ class JobsList extends Component {
         loading: false
       });
     }));
+
+    const poll = () => {
+      setTimeout(() => {
+        getJobs().then(jobs => {
+          this.setState({ jobs: jobs });
+          poll();
+        });
+      }, 1000);
+    };
+    poll();
   }
 
   render() {
@@ -36,8 +48,7 @@ class JobsList extends Component {
     return (
       <Col>
         <Modal show={showConfirmModal}>
-          <ModalContent
-            title='Pause Submission'
+          <ModalContent title='Pause Submission'
             body='Are you sure you want to pause submission of jobs? This means no more jobs may be submitted.'
             buttons={[
               { title: 'Confirm', bsStyle: 'primary', onClick: () => {
@@ -51,6 +62,37 @@ class JobsList extends Component {
               }},
               { title: 'Cancel', onClick: () => this.setState({showConfirmModal: false}) },
             ]}
+          >
+          </ModalContent>
+        </Modal>
+        <Modal show={showAddJobModal}>
+          <ModalContent title='Add New Job'
+            body={
+              <Form onSubmit={values => {
+                this.setState({ loading: true, showAddJobModal: false });
+                createJob(values).then(job => {
+                  jobs.push(job);
+                  this.setState({
+                    jobs: jobs,
+                    loading: false
+                  });
+                });
+              }}>
+                {formApi => (
+                  <form onSubmit={formApi.submitForm}>
+                    <label htmlFor="title">Title</label><br/>
+                    <Text field="title" id="title" validate={value => value ? null : 'Value cannot be empty'} />
+                    <hr/>
+                    <Button type="submit" bsStyle='primary'>
+                      Submit
+                    </Button>
+                    <Button onClick={() => this.setState({showAddJobModal: false})}>
+                      Cancel
+                    </Button>
+                  </form>
+                )}
+              </Form>
+            }
           >
           </ModalContent>
         </Modal>
@@ -74,7 +116,7 @@ class JobsList extends Component {
             }} disabled={loading}>
               { paused ? 'Unpause Submission' : 'Pause Submission' }
             </Button>
-            <Button bsStyle='primary' disabled={paused || loading}>
+            <Button bsStyle='primary' disabled={paused || loading} onClick={() => this.setState({ showAddJobModal: true })}>
               Add New Job
             </Button>
           </Col>
@@ -92,18 +134,16 @@ class JobsList extends Component {
           jobs === undefined ?
             null
             :
-              jobs.length === 0 ?
-                <h4 className='center empty-message'>No jobs were found, try adding a new one!</h4>
-                :
-                <div>
-                  jobs.map(j => (
-                    <Panel>j.id</Panel>
-                  ))
-                </div>
+            <JobsList jobs={jobs} onRemove={j => {
+              this.setState({ loading: true });
+              deleteJob(j.id).then(() => {
+                this.setState({ loading: false, jobs: jobs.filter(job => job.id != j.id) });
+              });
+            }}></JobsList>
         }
       </Col>
     );
   }
 }
 
-export default JobsList;
+export default JobsPage;

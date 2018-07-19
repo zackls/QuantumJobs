@@ -5,8 +5,8 @@ const base = 'http://localhost:8000';
 export const getJobs = () => {
     return axios.get(base + '/jobs').then(r => r.data);
 }
-export const createJob = (title) => {
-    return axios.post(base + '/jobs', {title: title}).then(r => r.data);
+export const createJob = (data) => {
+    return axios.post(base + '/jobs', data).then(r => r.data);
 }
 export const deleteJob = (id) => {
     return axios.delete(base + '/jobs/' + id).then(r => r.data);
