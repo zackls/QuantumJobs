@@ -3,6 +3,8 @@ import { Button } from 'react-bootstrap';
 
 import './ModalContent.css';
 
+// standardized content for a modal, accepting a title, a body, and a list of buttons
+
 export default ({ title, body, buttons }) => (
     <div className='padded'>
         <h3>{ title }</h3>

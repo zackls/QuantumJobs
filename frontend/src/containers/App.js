@@ -5,6 +5,8 @@ import { Col } from 'react-bootstrap';
 
 import './App.css';
 
+// main component of the application
+
 class App extends Component {
   render() {
     return (

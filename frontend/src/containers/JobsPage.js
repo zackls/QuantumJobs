@@ -9,21 +9,20 @@ import JobsList from '../components/JobsList';
 
 import './JobsPage.css';
 
+// the main content of the application, shows a list of jobs and options to pause submission and add jobs
+
 class JobsPage extends Component {
-  constructor() {
-    super();
+  state = {
+    jobs: undefined,
+    paused: false,
+    loading: true,
 
-    this.state = {
-      jobs: undefined,
-      paused: false,
-      loading: true,
-
-      showConfirmModal: false,
-      showAddJobModal: false,
-    };
-  }
+    showConfirmModal: false,
+    showAddJobModal: false,
+  };
 
   componentWillMount() {
+    // initial calls to backend to determine if the server is currently paused, and get the list of existing jobs
     axios.all([getJobs(), isPaused()]).then(axios.spread((jobs, paused) => {
       this.setState({
         jobs: jobs,
@@ -32,6 +31,7 @@ class JobsPage extends Component {
       });
     }));
 
+    // polls the backend every second for an updated list of jobs
     const poll = () => {
       setTimeout(() => {
         getJobs().then(jobs => {
@@ -47,6 +47,7 @@ class JobsPage extends Component {
     const { paused, jobs, loading, showConfirmModal, showAddJobModal } = this.state;
     return (
       <Col>
+        {/* Pause confirmation modal */}
         <Modal show={showConfirmModal}>
           <ModalContent title='Pause Submission'
             body='Are you sure you want to pause submission of jobs? This means no more jobs may be submitted.'
@@ -65,6 +66,7 @@ class JobsPage extends Component {
           >
           </ModalContent>
         </Modal>
+        {/* Add new job modal, with a form */}
         <Modal show={showAddJobModal}>
           <ModalContent title='Add New Job'
             body={
@@ -121,6 +123,7 @@ class JobsPage extends Component {
             </Button>
           </Col>
         </Row>
+        {/* Loading module for requests */}
         { loading ?
           <Row className='center'>
             <div className='loading-wrapper'>
@@ -137,7 +140,7 @@ class JobsPage extends Component {
             <JobsList jobs={jobs} onRemove={j => {
               this.setState({ loading: true });
               deleteJob(j.id).then(() => {
-                this.setState({ loading: false, jobs: jobs.filter(job => job.id != j.id) });
+                this.setState({ loading: false, jobs: jobs.filter(job => job.id !== j.id) });
               });
             }}></JobsList>
         }

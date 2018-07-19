@@ -4,8 +4,11 @@ import { Col, Row, Button, Panel } from 'react-bootstrap';
 
 import './JobsList.css';
 
+// a list of jobs, showing their titles, the job #, how long ago it was submitted, the status, and an option to remove
+
 export default ({jobs, onRemove}) => {
   return jobs.length === 0 ?
+    // simple empty message if the array is empty
     <h4 className='center empty-message'>No jobs were found, try adding a new one!</h4>
     :
     <div>
